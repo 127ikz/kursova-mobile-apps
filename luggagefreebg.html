@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LuggageFreeBG</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans">
+
+  <!-- Навигация -->
+  <nav class="bg-white shadow-md p-4 flex justify-around fixed bottom-0 w-full z-10">
+    <button onclick="showScreen('home')" class="text-blue-600">Начало</button>
+    <button onclick="showScreen('newBooking')">Нова заявка</button>
+    <button onclick="showScreen('bookings')">Заявки</button>
+    <button onclick="showScreen('contact')">Контакт</button>
+  </nav>
+
+  <div class="max-w-md mx-auto pt-6 pb-24 px-4">
+
+    <!-- Начален екран -->
+    <div id="home" class="screen">
+      <h1 class="text-2xl font-semibold text-center mt-6">Добре дошли в LuggageFreeBG</h1>
+      <p class="mt-4 text-center">Услуга за превоз на багаж от летище до хотел и обратно.</p>
+      <div class="mt-6 text-center">
+        <button onclick="showScreen('newBooking')" class="bg-blue-600 text-white py-2 px-4 rounded-xl">
+          Направи заявка
+        </button>
+      </div>
+    </div>
+
+    <!-- Форма за нова заявка -->
+    <div id="newBooking" class="screen hidden">
+      <h2 class="text-xl font-semibold mt-6 mb-4 text-center">Нова заявка</h2>
+      <form id="bookingForm" class="space-y-4">
+        <input type="text" id="name" placeholder="Име и фамилия" class="w-full border p-2 rounded-lg" required />
+        <input type="text" id="pickup" placeholder="Адрес за взимане" class="w-full border p-2 rounded-lg" required />
+        <input type="text" id="dropoff" placeholder="Адрес за доставка" class="w-full border p-2 rounded-lg" required />
+        <input type="datetime-local" id="datetime" class="w-full border p-2 rounded-lg" required />
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-xl">
+          Потвърди заявка
+        </button>
+      </form>
+      <div id="confirmation" class="mt-6 hidden bg-green-100 text-green-700 p-4 rounded-lg">
+        Заявката е приета успешно!
+      </div>
+    </div>
+
+    <!-- Списък със заявки -->
+    <div id="bookings" class="screen hidden">
+      <h2 class="text-xl font-semibold mt-6 mb-4 text-center">Моите заявки</h2>
+      <ul id="bookingList" class="space-y-2"></ul>
+    </div>
+
+    <!-- Контакт -->
+    <div id="contact" class="screen hidden">
+      <h2 class="text-xl font-semibold mt-6 mb-4 text-center">Свържи се с нас</h2>
+      <form class="space-y-4">
+        <input type="email" placeholder="Имейл" class="w-full border p-2 rounded-lg" required />
+        <textarea placeholder="Съобщение" class="w-full border p-2 rounded-lg" rows="4" required></textarea>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-xl">
+          Изпрати съобщение
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+    const screens = document.querySelectorAll('.screen');
+
+    function showScreen(id) {
+      screens.forEach(screen => {
+        screen.classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    // Начален екран по подразбиране
+    showScreen('home');
+
+    // Форма за заявка
+    const form = document.getElementById('bookingForm');
+    const confirmation = document.getElementById('confirmation');
+    const bookingList = document.getElementById('bookingList');
+    let bookings = [];
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const booking = {
+        name: document.getElementById('name').value,
+        pickup: document.getElementById('pickup').value,
+        dropoff: document.getElementById('dropoff').value,
+        datetime: document.getElementById('datetime').value
+      };
+
+      bookings.push(booking);
+      updateBookingList();
+
+      confirmation.classList.remove('hidden');
+      form.reset();
+      setTimeout(() => confirmation.classList.add('hidden'), 3000);
+    });
+
+    function updateBookingList() {
+      bookingList.innerHTML = '';
+      bookings.forEach((b, index) => {
+        const li = document.createElement('li');
+        li.className = "bg-white shadow p-3 rounded-lg";
+        li.innerHTML = `<strong>${b.name}</strong><br>
+                        От: ${b.pickup}<br>
+                        До: ${b.dropoff}<br>
+                        Кога: ${b.datetime}`;
+        bookingList.appendChild(li);
+      });
+    }
+  </script>
+
+</body>
+</html>
